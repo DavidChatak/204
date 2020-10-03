@@ -1,12 +1,21 @@
 pipeline {
     agent { label "master"}
     environment {
-        ECR_REGISTRY = "******"
+        ECR_REGISTRY = "088674315177.dkr.ecr.us-east-1.amazonaws.com"
+        APP_REPO_NAME = "david-repo/phonebook-app"
+        AWS_REGION = "us-east-1"
     }
     stages {
         stage ('create ECR repo') {
             steps {
                 echo 'creating ECR Repository....'
+                sh """
+                aws ecr create-repository \
+                  --repository-name ${APP_REPO_NAME} \
+                  --image-scanning-configuration scanOnPush=false \
+                  --image-mutability MUTABLE \
+                  --region ${AWS_REGION}
+                """
 
 
             }
