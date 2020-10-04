@@ -76,15 +76,14 @@ pipeline {
                 echo 'Deploying App on Docker-Swarm'
                 environment {
                 MASTER_INSTANCE_ID = sh(script:'aws ec2 describe-instances --region ${AWS_REGION} --filters Name=tag-value,Values=docker-grand-master Name=tag-value,Values=${AWS_STACK_NAME} --query Reservations[*].Instances[*].[InstanceId] --output text', returnStdout:true).trim()
-            }
-            steps {
+                }
                 echo "Cloning and Deploying App on Swarm using Grand Master with Instance Id: ${MASTER_INSTANCE_ID}"
                 sh 'mssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no --region ${AWS_REGION} ${MASTER_INSTANCE_ID} git clone ${GIT_URL}'
                 sleep(10)
                 sh 'mssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no --region ${AWS_REGION} ${MASTER_INSTANCE_ID} docker stack deploy --with-registry-auth -c ${HOME_FOLDER}/${GIT_FOLDER}/docker-compose.yml ${APP_NAME}'
             }
-            }
         }
+        
         stage ("testing app if it is deployed or not") {
             steps {
                 echo 'testing app if it is deployed or not'
@@ -103,6 +102,7 @@ pipeline {
                 }
             }
         }
+    }
     
     post {
         always {
@@ -118,7 +118,6 @@ pipeline {
                   --force
             """
             sh 'aws cloudformation delete-stack --region ${AWS_REGION} --stack-name ${AWS_STACK_NAME}'
-            }
         }
     }
 }
