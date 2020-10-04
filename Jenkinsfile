@@ -118,6 +118,7 @@ pipeline {
                   --force
             """
             sh 'aws cloudformation delete-stack --region ${AWS_REGION} --stack-name ${AWS_STACK_NAME}'
+            }
         }
     }
 }
