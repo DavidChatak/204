@@ -16,6 +16,8 @@ pipeline {
                   --image-tag-mutability MUTABLE \
                   --region ${AWS_REGION}
                 """
+                sh 'docker build --force-rm -t "${ECR_REGISTRY}/${APP_REPO_NAME}:latest"  . '
+                sh 'docker image ls'
             }
         }
         stage ("Build App Docker Image") {
@@ -52,6 +54,7 @@ pipeline {
     post {
         always {
             echo 'deleting all local images'
+            sh 'docker prune -af'
         }
         failure {
             echo 'Deleting image repository on ECR due to failure'
