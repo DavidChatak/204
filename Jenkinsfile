@@ -16,10 +16,7 @@ pipeline {
                   --image-tag-mutability MUTABLE \
                   --region ${AWS_REGION}
                 """
-
-
             }
-
         }
         stage ("Build App Docker Image") {
             steps {
@@ -60,7 +57,4 @@ pipeline {
             echo 'Deleting image repository on ECR due to failure'
         }
     }
-
-
-
 }
