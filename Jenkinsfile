@@ -18,6 +18,7 @@ pipeline {
                 """
                 sh 'docker build --force-rm -t "${ECR_REGISTRY}/${APP_REPO_NAME}:latest"  . '
                 sh 'docker image ls'
+                
             }
         }
         stage ("Build App Docker Image") {
@@ -28,6 +29,8 @@ pipeline {
         stage ("Push Docker Image to ECR Repo") {
             steps {
                 echo 'Pushing App Docker Image to ECR Repo'
+                sh 'aws ecr get-login-password --region ${AWS::Region} | docker login --username AWS --password-stdin ${ECR_REGISTRY}'
+                sh 'docker push "${ECR_REGISTRY}/${APP_REPO_NAME}:latest"'
             }
         }
         stage ("Crete Ifrastucture for App") {
@@ -54,7 +57,7 @@ pipeline {
     post {
         always {
             echo 'deleting all local images'
-            sh 'docker prune -af'
+            sh 'docker image prune -af'
         }
         failure {
             echo 'Deleting image repository on ECR due to failure'
