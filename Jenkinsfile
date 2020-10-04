@@ -104,7 +104,7 @@ pipeline {
                 }
             }
         }
-    }
+    
     post {
         always {
             echo 'deleting all local images'
