@@ -40,7 +40,6 @@ pipeline {
             }
         }
         
-        }
         stage ("Push Docker Image to ECR Repo") {
             steps {
                 echo 'Pushing App Docker Image to ECR Repo'
